@@ -246,7 +246,16 @@ function finishQuiz() {
     reviewBtn.hidden = true;
   }
 
-  renderBreakdown();
+  renderBreakdown(); // menghitung lastWrongTags
+
+  // simpan ringkasan hasil untuk dibagikan ke WhatsApp
+  const okTags = [...new Set(answers.filter((a) => a.ok).map((a) => a.tag))]
+    .filter((t) => !lastWrongTags.includes(t));
+  lastResult = {
+    nilai, correct, total, earnedPoints, reviewMode,
+    okTags, wrongTags: lastWrongTags.slice(),
+  };
+
   renderRewards();
   show("result");
   sfx.finish();
@@ -346,6 +355,7 @@ $("btn-home").addEventListener("click", () => {
 let lastWrongTags = []; // materi yang salah pada sesi terakhir (untuk disorot)
 let studyFocusTags = []; // materi yang sedang disorot di modal (untuk dibagikan)
 let studyRendered = false;
+let lastResult = null;   // ringkasan hasil ujian terakhir (untuk dibagikan)
 
 function renderStudyBody() {
   if (studyRendered) return; // isi statis, cukup render sekali
@@ -399,10 +409,8 @@ function buildShareText() {
   return `${header}\n\n${blocks.join("\n\n")}\n\n— dibuat dengan aplikasi Ujian Seru PKN 💜🐸`;
 }
 
-function shareWhatsApp() {
-  sfx.click();
-  const text = buildShareText();
-  // navigator.share = sheet asli HP (ada pilihan WhatsApp); fallback ke wa.me
+// kirim teks ke WhatsApp: pakai share sheet asli HP, fallback ke wa.me
+function shareToWhatsApp(text) {
   if (navigator.share) {
     navigator.share({ text }).catch(() => {});
   } else {
@@ -410,7 +418,38 @@ function shareWhatsApp() {
   }
 }
 
+function shareWhatsApp() {
+  sfx.click();
+  shareToWhatsApp(buildShareText());
+}
+
+// susun teks HASIL UJIAN untuk dibagikan
+function buildResultShareText() {
+  const r = lastResult;
+  const nama = store.name ? ` — ${store.name}` : "";
+  const lines = [`🎀 Hasil Ujian PKN Kelas 2${nama} 🐸`];
+  if (r.reviewMode) {
+    lines.push(`📝 Latihan ulang soal yang salah`);
+    lines.push(`⭐ Benar: ${r.correct}/${r.total} (nilai ${r.nilai})`);
+  } else {
+    lines.push(`⭐ Nilai: ${r.nilai} (${r.correct}/${r.total} benar)`);
+    lines.push(`🪙 Poin didapat: +${r.earnedPoints}`);
+  }
+  if (r.okTags.length) lines.push(`\n✅ Dikuasai: ${r.okTags.join(", ")}`);
+  if (r.wrongTags.length) lines.push(`📌 Perlu belajar lagi: ${r.wrongTags.join(", ")}`);
+  else lines.push(`\n🌟 Semua materi dikuasai!`);
+  lines.push(`\n— Ujian Seru PKN 💜🐸`);
+  return lines.join("\n");
+}
+
+function shareResult() {
+  if (!lastResult) return;
+  sfx.click();
+  shareToWhatsApp(buildResultShareText());
+}
+
 $("btn-share-wa").addEventListener("click", shareWhatsApp);
+$("btn-share-result").addEventListener("click", shareResult);
 $("btn-study-start").addEventListener("click", () => openStudy());
 $("btn-study-result").addEventListener("click", () => openStudy(lastWrongTags));
 $("btn-study-close").addEventListener("click", closeStudy);
