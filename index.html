@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Ujian Seru PKN ✨ Kuromi & Keroppi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./css/styles.css" />
+</head>
+<body>
+  <!-- background bubbles -->
+  <div class="bg-deco" aria-hidden="true">
+    <span class="float f1">🌸</span>
+    <span class="float f2">💜</span>
+    <span class="float f3">🍀</span>
+    <span class="float f4">⭐</span>
+    <span class="float f5">🎀</span>
+    <span class="float f6">🐸</span>
+    <span class="float f7">💚</span>
+    <span class="float f8">✨</span>
+  </div>
+
+  <main id="app" class="app">
+    <!-- ============ START SCREEN ============ -->
+    <section id="screen-start" class="screen screen--start is-active">
+      <div class="card card--hero">
+        <div class="mascots">
+          <div class="mascot mascot--kuromi" title="Kuromi">
+            <div class="kuromi">
+              <div class="kuromi__hood">
+                <span class="kuromi__ear kuromi__ear--l"></span>
+                <span class="kuromi__ear kuromi__ear--r"></span>
+                <span class="kuromi__skull">💀</span>
+              </div>
+              <div class="kuromi__face">
+                <span class="eye eye--l"></span>
+                <span class="eye eye--r"></span>
+                <span class="kuromi__cheek kuromi__cheek--l"></span>
+                <span class="kuromi__cheek kuromi__cheek--r"></span>
+                <span class="kuromi__mouth"></span>
+              </div>
+            </div>
+          </div>
+          <div class="mascot mascot--keroppi" title="Keroppi">
+            <div class="keroppi">
+              <div class="keroppi__eyes">
+                <span class="keroppi__eye"><span class="keroppi__pupil"></span></span>
+                <span class="keroppi__eye"><span class="keroppi__pupil"></span></span>
+              </div>
+              <div class="keroppi__face">
+                <span class="keroppi__cheek keroppi__cheek--l"></span>
+                <span class="keroppi__cheek keroppi__cheek--r"></span>
+                <span class="keroppi__mouth"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h1 class="title">Ujian Seru PKN<span class="title__spark">✨</span></h1>
+        <p class="subtitle">Kelas 2 SD · Bersama Kuromi &amp; Keroppi 💜💚</p>
+
+        <div class="namebox">
+          <label for="player-name">Siapa nama jagoan hari ini?</label>
+          <input id="player-name" type="text" maxlength="16" placeholder="Tulis namamu di sini ✏️" autocomplete="off" />
+        </div>
+
+        <div class="info-pills">
+          <span class="pill">📝 20 Soal</span>
+          <span class="pill">⏱️ Santai aja</span>
+          <span class="pill">🏆 Kumpulkan Poin</span>
+        </div>
+
+        <button id="btn-start" class="btn btn--big btn--play">Mulai Main! 🚀</button>
+
+        <p class="best-line" id="best-line"></p>
+      </div>
+    </section>
+
+    <!-- ============ QUIZ SCREEN ============ -->
+    <section id="screen-quiz" class="screen screen--quiz">
+      <header class="quiz-top">
+        <div class="quiz-top__row">
+          <span class="badge badge--num">Soal <b id="q-current">1</b>/<span id="q-total">20</span></span>
+          <span class="badge badge--score">⭐ <b id="live-score">0</b></span>
+        </div>
+        <div class="progress"><div class="progress__bar" id="progress-bar"></div></div>
+      </header>
+
+      <div class="card card--quiz">
+        <div class="q-mascot" id="q-mascot">🐸</div>
+        <p class="q-tag" id="q-tag">Materi</p>
+        <h2 class="q-text" id="q-text">Pertanyaan…</h2>
+        <div class="options" id="options"></div>
+        <div class="feedback" id="feedback" aria-live="polite"></div>
+        <button id="btn-next" class="btn btn--next" hidden>Lanjut ➡️</button>
+      </div>
+    </section>
+
+    <!-- ============ RESULT SCREEN ============ -->
+    <section id="screen-result" class="screen screen--result">
+      <div class="card card--result">
+        <div class="result-mascot" id="result-mascot">🎉</div>
+        <h2 class="result-title" id="result-title">Hebat!</h2>
+        <p class="result-sub" id="result-sub"></p>
+
+        <div class="stars" id="stars" aria-hidden="true">
+          <span>⭐</span><span>⭐</span><span>⭐</span>
+        </div>
+
+        <div class="scoreboard">
+          <div class="score-cell">
+            <span class="score-cell__num" id="final-correct">0</span>
+            <span class="score-cell__lbl">Benar</span>
+          </div>
+          <div class="score-cell">
+            <span class="score-cell__num" id="final-score">0</span>
+            <span class="score-cell__lbl">Nilai</span>
+          </div>
+          <div class="score-cell score-cell--point">
+            <span class="score-cell__num" id="final-points">0</span>
+            <span class="score-cell__lbl">Poin 🪙</span>
+          </div>
+        </div>
+
+        <!-- REWARDS -->
+        <div class="rewards">
+          <h3 class="rewards__title">🎁 Tukar Poinmu!</h3>
+          <p class="rewards__sub">Poin kamu sekarang: <b id="wallet-points">0</b> 🪙</p>
+          <div class="rewards__grid" id="rewards-grid"></div>
+        </div>
+
+        <div class="result-actions">
+          <button id="btn-retry" class="btn btn--retry">Main Lagi 🔁</button>
+          <button id="btn-home" class="btn btn--ghost">🏠 Beranda</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- toast for reward redeem -->
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <!-- confetti canvas -->
+  <canvas id="confetti" class="confetti-canvas" aria-hidden="true"></canvas>
+
+  <!-- mute button -->
+  <button id="btn-mute" class="btn-mute" title="Suara on/off" aria-label="Suara on/off">🔊</button>
+
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>
