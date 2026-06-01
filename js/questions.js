@@ -755,4 +755,234 @@ export const QUESTIONS = [
     answer: 0,
     why: "Benar! Persatuan membuat hidup tenang dan bahagia. 😊",
   },
+
+  // =====================================================================
+  //  TAMBAHAN VARIASI — agar tiap indikator punya minimal 6 soal.
+  //  (Posisi tidak memengaruhi ujian karena soal dipilih berdasarkan tag.)
+  // =====================================================================
+
+  // + Manfaat Pancasila
+  {
+    tag: "Manfaat Pancasila", emoji: "🤝",
+    text: "Mengamalkan Pancasila membuat kita suka saling…",
+    options: ["Tolong-menolong", "Bermusuhan", "Mengejek", "Bertengkar"],
+    answer: 0,
+    why: "Benar! Pancasila membuat kita saling tolong-menolong. 🤝",
+  },
+  // + Kewajiban di Rumah
+  {
+    tag: "Kewajiban di Rumah", emoji: "🧼",
+    text: "Sebelum makan di rumah, sebaiknya kita…",
+    options: ["Mencuci tangan", "Bermain HP", "Tidur dulu", "Berlari-lari"],
+    answer: 0,
+    why: "Tepat! Mencuci tangan sebelum makan menjaga kebersihan. 🧼",
+  },
+  // + Hak dan Kewajiban
+  {
+    tag: "Hak dan Kewajiban", emoji: "💪",
+    text: "Kewajiban sebaiknya kita lakukan dengan…",
+    options: ["Penuh tanggung jawab", "Terpaksa", "Malas", "Marah-marah"],
+    answer: 0,
+    why: "Benar! Kewajiban dikerjakan dengan penuh tanggung jawab. 💪",
+  },
+  // + Kewajiban di Sekolah
+  {
+    tag: "Kewajiban di Sekolah", emoji: "👕",
+    text: "Saat bersekolah, kita wajib memakai seragam dengan…",
+    options: ["Rapi", "Kotor", "Sobek", "Terbalik"],
+    answer: 0,
+    why: "Tepat! Seragam dipakai dengan rapi. 👕",
+  },
+  // + Keberagaman
+  {
+    tag: "Keberagaman", emoji: "🗣️",
+    text: "Teman kita berasal dari daerah yang berbeda-beda. Sikap kita sebaiknya…",
+    options: ["Berteman dengan semua", "Mengejek bahasanya", "Menjauhinya", "Memilih yang sedaerah saja"],
+    answer: 0,
+    why: "Benar! Kita berteman dengan semua walau beda daerah. 🗣️",
+  },
+  // + Toleransi
+  {
+    tag: "Toleransi", emoji: "🙏",
+    text: "Sikap toleransi terhadap teman yang berbeda agama adalah…",
+    options: ["Tetap berteman baik", "Memaksa pindah agama", "Mengejeknya", "Tidak mau bicara"],
+    answer: 0,
+    why: "Tepat! Toleransi = tetap berteman baik walau beda agama. 🙏",
+  },
+
+  // ++ Peran Ayah
+  {
+    tag: "Peran Ayah", emoji: "💼",
+    text: "Ayah pergi bekerja setiap hari untuk…",
+    options: ["Memenuhi kebutuhan keluarga", "Bermain saja", "Jalan-jalan", "Bersantai"],
+    answer: 0,
+    why: "Benar! Ayah bekerja untuk memenuhi kebutuhan keluarga. 💼",
+  },
+  {
+    tag: "Peran Ayah", emoji: "🤗",
+    text: "Saat ayah pulang bekerja dengan lelah, sebaiknya kita…",
+    options: ["Menyambut dengan senyum", "Mengabaikannya", "Minta uang terus", "Marah"],
+    answer: 0,
+    why: "Tepat! Kita menyambut ayah dengan senyum dan sayang. 🤗",
+  },
+
+  // ++ Hidup Harmonis
+  {
+    tag: "Hidup Harmonis", emoji: "🙇",
+    text: "Agar tetap rukun, jika berbuat salah kepada teman kita sebaiknya…",
+    options: ["Meminta maaf", "Menyalahkan teman", "Marah", "Diam saja"],
+    answer: 0,
+    why: "Benar! Meminta maaf menjaga kerukunan. 🙇",
+  },
+  {
+    tag: "Hidup Harmonis", emoji: "🏡",
+    text: "Keluarga yang hidup harmonis akan terasa…",
+    options: ["Bahagia dan tenteram", "Menyeramkan", "Selalu sepi", "Penuh pertengkaran"],
+    answer: 0,
+    why: "Tepat! Keluarga harmonis terasa bahagia dan tenteram. 🏡",
+  },
+
+  // ++ Peran Sekolah
+  {
+    tag: "Peran Sekolah", emoji: "🧹",
+    text: "Mengikuti kerja bakti di sekolah memupuk rasa…",
+    options: ["Kebersamaan", "Permusuhan", "Malas", "Egois"],
+    answer: 0,
+    why: "Benar! Kerja bakti menumbuhkan rasa kebersamaan. 🧹",
+  },
+  {
+    tag: "Peran Sekolah", emoji: "🤝",
+    text: "Di sekolah kita belajar menghargai teman yang berbeda agar tercipta…",
+    options: ["Persatuan", "Pertengkaran", "Perpecahan", "Permusuhan"],
+    answer: 0,
+    why: "Tepat! Saling menghargai menciptakan persatuan. 🤝",
+  },
+
+  // ++ Menjaga Lingkungan Sekolah
+  {
+    tag: "Menjaga Lingkungan Sekolah", emoji: "🍂",
+    text: "Agar halaman sekolah bersih, daun-daun yang berserakan sebaiknya…",
+    options: ["Disapu dan dibuang", "Dibiarkan", "Diinjak-injak", "Ditendang"],
+    answer: 0,
+    why: "Benar! Daun yang berserakan disapu lalu dibuang. 🍂",
+  },
+  {
+    tag: "Menjaga Lingkungan Sekolah", emoji: "🍱",
+    text: "Setelah jajan di kantin, bungkus makanan kita buang ke…",
+    options: ["Tempat sampah", "Bawah meja", "Halaman", "Selokan"],
+    answer: 0,
+    why: "Tepat! Bungkus makanan dibuang ke tempat sampah. 🍱",
+  },
+
+  // ++ Gotong Royong
+  {
+    tag: "Gotong Royong", emoji: "🏘️",
+    text: "Membersihkan lingkungan bersama warga di sekitar rumah disebut…",
+    options: ["Gotong royong", "Bermain", "Bertengkar", "Berlomba"],
+    answer: 0,
+    why: "Benar! Bekerja bersama warga disebut gotong royong / kerja bakti. 🏘️",
+  },
+  {
+    tag: "Gotong Royong", emoji: "🙋",
+    text: "Saat teman sedang bergotong royong, sikap kita sebaiknya…",
+    options: ["Ikut membantu", "Menonton saja", "Pergi bermain", "Tidur"],
+    answer: 0,
+    why: "Tepat! Kita ikut membantu saat gotong royong. 🙋",
+  },
+
+  // ++ Arti Persatuan
+  {
+    tag: "Arti Persatuan", emoji: "🧒",
+    text: "Bermain bersama tanpa membeda-bedakan teman adalah contoh sikap…",
+    options: ["Persatuan", "Permusuhan", "Sombong", "Egois"],
+    answer: 0,
+    why: "Benar! Bermain bersama semua menunjukkan persatuan. 🧒",
+  },
+  {
+    tag: "Arti Persatuan", emoji: "💪",
+    text: "Kalimat 'bersatu kita teguh' menunjukkan pentingnya…",
+    options: ["Persatuan", "Pertengkaran", "Perpecahan", "Kemalasan"],
+    answer: 0,
+    why: "Tepat! Kalimat itu menunjukkan pentingnya persatuan. 💪",
+  },
+
+  // ++ Kerja Kelompok
+  {
+    tag: "Kerja Kelompok", emoji: "💬",
+    text: "Saat anggota kelompok berbeda pendapat, sebaiknya…",
+    options: ["Dimusyawarahkan", "Bertengkar", "Berebut", "Saling marah"],
+    answer: 0,
+    why: "Benar! Perbedaan pendapat dimusyawarahkan. 💬",
+  },
+  {
+    tag: "Kerja Kelompok", emoji: "🎁",
+    text: "Hasil kerja kelompok adalah milik…",
+    options: ["Bersama", "Satu orang", "Ketua saja", "Guru"],
+    answer: 0,
+    why: "Tepat! Hasil kerja kelompok milik bersama. 🎁",
+  },
+
+  // ++ Manfaat Persatuan
+  {
+    tag: "Manfaat Persatuan", emoji: "🏡",
+    text: "Jika warga bersatu, lingkungan menjadi…",
+    options: ["Aman dan damai", "Ribut", "Berbahaya", "Kotor"],
+    answer: 0,
+    why: "Benar! Warga yang bersatu membuat lingkungan aman dan damai. 🏡",
+  },
+  {
+    tag: "Manfaat Persatuan", emoji: "🧠",
+    text: "Dengan persatuan, masalah lebih mudah…",
+    options: ["Diselesaikan bersama", "Diperbesar", "Diabaikan", "Dilupakan"],
+    answer: 0,
+    why: "Tepat! Persatuan membuat masalah mudah diselesaikan bersama. 🧠",
+  },
+
+  // ++ Merawat Lingkungan
+  {
+    tag: "Merawat Lingkungan", emoji: "🌳",
+    text: "Agar udara di sekolah segar, sebaiknya kita…",
+    options: ["Menanam dan merawat tanaman", "Menebang pohon", "Membakar sampah", "Mencabut bunga"],
+    answer: 0,
+    why: "Benar! Menanam dan merawat tanaman membuat udara segar. 🌳",
+  },
+  {
+    tag: "Merawat Lingkungan", emoji: "🚰",
+    text: "Melihat keran air menyala padahal tidak dipakai, sebaiknya kita…",
+    options: ["Mematikannya", "Membiarkannya", "Menambah airnya", "Bermain air"],
+    answer: 0,
+    why: "Tepat! Mematikan keran berarti hemat air dan merawat lingkungan. 🚰",
+  },
+
+  // ++ Tujuan Persatuan
+  {
+    tag: "Tujuan Persatuan", emoji: "🛡️",
+    text: "Salah satu tujuan menjaga persatuan adalah menghindari…",
+    options: ["Perpecahan", "Kebahagiaan", "Kerukunan", "Kedamaian"],
+    answer: 0,
+    why: "Benar! Persatuan menghindarkan kita dari perpecahan. 🛡️",
+  },
+  {
+    tag: "Tujuan Persatuan", emoji: "🚀",
+    text: "Dengan bersatu, bangsa Indonesia menjadi…",
+    options: ["Kuat dan maju", "Lemah", "Terpecah", "Mundur"],
+    answer: 0,
+    why: "Tepat! Bersatu membuat bangsa kuat dan maju. 🚀",
+  },
+
+  // ++ Persatuan (pengertian)
+  {
+    tag: "Persatuan", emoji: "🚫",
+    text: "Hidup bersatu berarti tidak suka…",
+    options: ["Bertengkar", "Menolong", "Berbagi", "Bekerja sama"],
+    answer: 0,
+    why: "Benar! Orang yang bersatu tidak suka bertengkar. 🚫",
+  },
+  {
+    tag: "Persatuan", emoji: "🧑‍🤝‍🧑",
+    text: "Teman-teman yang bekerja sama dengan kompak menunjukkan adanya…",
+    options: ["Persatuan", "Permusuhan", "Perpecahan", "Pertengkaran"],
+    answer: 0,
+    why: "Tepat! Bekerja kompak menunjukkan persatuan. 🧑‍🤝‍🧑",
+  },
 ];
