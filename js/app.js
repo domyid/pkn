@@ -1,5 +1,6 @@
 import { QUESTIONS, INDICATORS } from "./questions.js";
 import { REWARDS, POINTS_PER_CORRECT } from "./rewards.js";
+import { RANGKUMAN } from "./rangkuman.js";
 import { sfx, setMuted, isMuted } from "./audio.js";
 import { burst } from "./confetti.js";
 
@@ -48,6 +49,7 @@ let correct = 0;         // jumlah benar
 let earnedPoints = 0;    // poin sesi ini
 let locked = false;      // cegah klik ganda
 let wrongQuestions = []; // soal yang dijawab salah (untuk mode ulangi)
+let answers = [];        // rekam tiap jawaban: { tag, ok } untuk rincian per materi
 let reviewMode = false;  // true = sedang mengulang soal yang salah (latihan, tanpa poin)
 
 // Susun 1 soal ACAK dari TIAP indikator (sesuai kisi-kisi) lalu diacak urutannya.
@@ -106,6 +108,7 @@ function beginSession() {
   correct = 0;
   earnedPoints = 0;
   wrongQuestions = [];
+  answers = [];
   $("q-total").textContent = order.length;
   $("live-score").textContent = "0";
   show("quiz");
@@ -150,6 +153,7 @@ function choose(btn, opt, q) {
   allBtns.forEach((b) => (b.disabled = true));
 
   const fb = $("feedback");
+  answers.push({ tag: q.tag, ok: opt.isCorrect }); // rekam untuk rincian per materi
 
   if (opt.isCorrect) {
     btn.classList.add("option--correct");
@@ -242,6 +246,7 @@ function finishQuiz() {
     reviewBtn.hidden = true;
   }
 
+  renderBreakdown();
   renderRewards();
   show("result");
   sfx.finish();
@@ -254,6 +259,35 @@ function finishQuiz() {
 
 // soal yang menunggu untuk diulang (diset saat finishQuiz)
 let pendingReview = [];
+
+// ---------- rincian hasil per materi ----------
+function renderBreakdown() {
+  const list = $("breakdown-list");
+  const hint = $("breakdown-hint");
+  list.innerHTML = "";
+
+  // urutkan sesuai kisi-kisi untuk ujian penuh; mode latihan ikut urutan dikerjakan
+  const rows = reviewMode
+    ? answers.slice()
+    : answers.slice().sort((a, b) => INDICATORS.indexOf(a.tag) - INDICATORS.indexOf(b.tag));
+
+  rows.forEach((a) => {
+    const item = document.createElement("div");
+    item.className = "bd-item " + (a.ok ? "bd-item--ok" : "bd-item--no");
+    item.innerHTML = `<span class="bd-item__mark">${a.ok ? "✓" : "✗"}</span><span class="bd-item__tag">${a.tag}</span>`;
+    list.appendChild(item);
+  });
+
+  const wrongTags = [...new Set(rows.filter((a) => !a.ok).map((a) => a.tag))];
+  lastWrongTags = wrongTags; // untuk disorot di rangkuman
+  if (wrongTags.length === 0) {
+    hint.textContent = "🌟 Semua materi sudah dikuasai. Keren banget!";
+    hint.className = "breakdown__hint breakdown__hint--ok";
+  } else {
+    hint.textContent = "📌 Yuk pelajari lagi malam ini: " + wrongTags.join(", ") + ".";
+    hint.className = "breakdown__hint breakdown__hint--no";
+  }
+}
 
 // ---------- reward ----------
 function renderRewards() {
@@ -306,6 +340,83 @@ $("btn-home").addEventListener("click", () => {
   sfx.click();
   renderBestLine();
   show("start");
+});
+
+// ---------- rangkuman materi (lembar belajar) ----------
+let lastWrongTags = []; // materi yang salah pada sesi terakhir (untuk disorot)
+let studyFocusTags = []; // materi yang sedang disorot di modal (untuk dibagikan)
+let studyRendered = false;
+
+function renderStudyBody() {
+  if (studyRendered) return; // isi statis, cukup render sekali
+  const body = $("study-body");
+  body.innerHTML = "";
+  RANGKUMAN.forEach((m) => {
+    const card = document.createElement("div");
+    card.className = "study-card";
+    card.dataset.tag = m.tag;
+    card.innerHTML =
+      `<h3 class="study-card__title">${m.icon} ${m.tag}</h3>` +
+      `<ul class="study-card__list">${m.points.map((p) => `<li>${p}</li>`).join("")}</ul>`;
+    body.appendChild(card);
+  });
+  studyRendered = true;
+}
+
+function openStudy(highlightTags = []) {
+  sfx.click();
+  renderStudyBody();
+  studyFocusTags = highlightTags.slice();
+  const set = new Set(highlightTags);
+  // sorot materi yang masih salah, dan urutkan ke atas
+  const body = $("study-body");
+  [...body.children].forEach((card) => {
+    card.classList.toggle("study-card--focus", set.has(card.dataset.tag));
+  });
+  $("study-modal").hidden = false;
+  // gulir ke materi pertama yang perlu dipelajari (jika ada)
+  if (set.size) {
+    const first = [...body.children].find((c) => set.has(c.dataset.tag));
+    if (first) setTimeout(() => first.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
+  } else {
+    body.scrollTop = 0;
+  }
+}
+
+function closeStudy() { sfx.click(); $("study-modal").hidden = true; }
+
+// susun teks rangkuman untuk dibagikan ke WhatsApp
+function buildShareText() {
+  const focus = studyFocusTags.length ? new Set(studyFocusTags) : null;
+  const items = focus ? RANGKUMAN.filter((m) => focus.has(m.tag)) : RANGKUMAN;
+  const nama = store.name ? ` (${store.name})` : "";
+  const header = focus
+    ? `📚 Materi PKN yang perlu dipelajari${nama}:`
+    : `📖 Rangkuman Materi PKN Kelas 2 SD${nama}`;
+  const blocks = items.map(
+    (m) => `${m.icon} *${m.tag}*\n` + m.points.map((p) => `• ${p}`).join("\n")
+  );
+  return `${header}\n\n${blocks.join("\n\n")}\n\n— dibuat dengan aplikasi Ujian Seru PKN 💜🐸`;
+}
+
+function shareWhatsApp() {
+  sfx.click();
+  const text = buildShareText();
+  // navigator.share = sheet asli HP (ada pilihan WhatsApp); fallback ke wa.me
+  if (navigator.share) {
+    navigator.share({ text }).catch(() => {});
+  } else {
+    window.open("https://wa.me/?text=" + encodeURIComponent(text), "_blank");
+  }
+}
+
+$("btn-share-wa").addEventListener("click", shareWhatsApp);
+$("btn-study-start").addEventListener("click", () => openStudy());
+$("btn-study-result").addEventListener("click", () => openStudy(lastWrongTags));
+$("btn-study-close").addEventListener("click", closeStudy);
+$("study-backdrop").addEventListener("click", closeStudy);
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && !$("study-modal").hidden) closeStudy();
 });
 
 // ---------- mute ----------

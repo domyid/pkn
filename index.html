@@ -73,6 +73,7 @@
         </div>
 
         <button id="btn-start" class="btn btn--big btn--play">Mulai Main! 🚀</button>
+        <button id="btn-study-start" class="btn btn--study">📖 Belajar Materi Dulu</button>
 
         <p class="best-line" id="best-line"></p>
       </div>
@@ -124,6 +125,13 @@
           </div>
         </div>
 
+        <!-- RINCIAN PER MATERI -->
+        <div class="breakdown" id="breakdown-wrap">
+          <h3 class="breakdown__title">📋 Hasil per Materi</h3>
+          <p class="breakdown__hint" id="breakdown-hint"></p>
+          <div class="breakdown__list" id="breakdown-list"></div>
+        </div>
+
         <!-- REWARDS -->
         <div class="rewards">
           <h3 class="rewards__title">🎁 Tukar Poinmu!</h3>
@@ -133,6 +141,7 @@
 
         <div class="result-actions">
           <button id="btn-review" class="btn btn--review" hidden>🔁 Ulangi Soal yang Salah</button>
+          <button id="btn-study-result" class="btn btn--study">📖 Lihat Rangkuman Materi</button>
           <button id="btn-retry" class="btn btn--retry">Ujian Baru 🎲</button>
           <button id="btn-home" class="btn btn--ghost">🏠 Beranda</button>
         </div>
@@ -142,6 +151,20 @@
 
   <!-- toast for reward redeem -->
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <!-- ============ MODAL RANGKUMAN MATERI (lembar belajar) ============ -->
+  <div id="study-modal" class="modal" hidden>
+    <div class="modal__backdrop" id="study-backdrop"></div>
+    <div class="modal__box" role="dialog" aria-modal="true" aria-labelledby="study-title">
+      <div class="modal__head">
+        <h2 id="study-title" class="modal__title">📖 Rangkuman Materi PKN</h2>
+        <button id="btn-study-close" class="modal__close" aria-label="Tutup">✕</button>
+      </div>
+      <p class="modal__note">Baca dan pelajari poin-poin penting di bawah ini ya! 💜🐸</p>
+      <button id="btn-share-wa" class="btn btn--wa">🟢 Bagikan ke WhatsApp</button>
+      <div class="modal__body" id="study-body"></div>
+    </div>
+  </div>
 
   <!-- confetti canvas -->
   <canvas id="confetti" class="confetti-canvas" aria-hidden="true"></canvas>
