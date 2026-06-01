@@ -153,7 +153,15 @@ function choose(btn, opt, q) {
   allBtns.forEach((b) => (b.disabled = true));
 
   const fb = $("feedback");
-  answers.push({ tag: q.tag, ok: opt.isCorrect }); // rekam untuk rincian per materi
+  // rekam detail jawaban (untuk rincian per materi & pembahasan)
+  answers.push({
+    no: idx + 1,
+    tag: q.tag,
+    question: q.text,
+    chosen: opt.text,
+    correct: q.options[q.answer],
+    ok: opt.isCorrect,
+  });
 
   if (opt.isCorrect) {
     btn.classList.add("option--correct");
@@ -255,6 +263,7 @@ function finishQuiz() {
     nilai, correct, total, earnedPoints, reviewMode,
     okTags, wrongTags: lastWrongTags.slice(),
   };
+  lastAnswers = answers.slice(); // snapshot detail jawaban untuk pembahasan
 
   renderRewards();
   show("result");
@@ -356,6 +365,7 @@ let lastWrongTags = []; // materi yang salah pada sesi terakhir (untuk disorot)
 let studyFocusTags = []; // materi yang sedang disorot di modal (untuk dibagikan)
 let studyRendered = false;
 let lastResult = null;   // ringkasan hasil ujian terakhir (untuk dibagikan)
+let lastAnswers = [];    // detail tiap jawaban sesi terakhir (untuk pembahasan)
 
 function renderStudyBody() {
   if (studyRendered) return; // isi statis, cukup render sekali
@@ -450,12 +460,78 @@ function shareResult() {
 
 $("btn-share-wa").addEventListener("click", shareWhatsApp);
 $("btn-share-result").addEventListener("click", shareResult);
+
+// ---------- pembahasan jawaban (evaluasi bersama orang tua) ----------
+function renderReview() {
+  const body = $("review-body");
+  body.innerHTML = "";
+
+  const wrong = lastAnswers.filter((a) => !a.ok);
+  // ringkasan kecil di atas
+  const summary = document.createElement("p");
+  summary.className = "rv-summary";
+  summary.textContent = wrong.length === 0
+    ? `🌟 Semua ${lastAnswers.length} soal dijawab benar. Hebat!`
+    : `Ada ${wrong.length} soal yang masih salah dari ${lastAnswers.length} soal.`;
+  body.appendChild(summary);
+
+  // daftar soal yang salah (fokus evaluasi)
+  wrong.forEach((a) => {
+    const card = document.createElement("div");
+    card.className = "rv-card";
+    card.innerHTML =
+      `<div class="rv-card__head"><span class="rv-no">No. ${a.no}</span>` +
+      `<span class="rv-tag">${a.tag}</span></div>` +
+      `<p class="rv-q">${a.question}</p>` +
+      `<p class="rv-line rv-line--wrong">❌ Jawabanmu: ${a.chosen}</p>` +
+      `<p class="rv-line rv-line--right">✅ Seharusnya: ${a.correct}</p>`;
+    body.appendChild(card);
+  });
+
+  if (wrong.length === 0) {
+    const ok = document.createElement("div");
+    ok.className = "rv-card rv-card--allok";
+    ok.textContent = "Tidak ada soal yang perlu dibahas. Pertahankan ya! 💜🐸";
+    body.appendChild(ok);
+  }
+}
+
+function openReview() {
+  if (!lastAnswers.length) return;
+  sfx.click();
+  renderReview();
+  $("review-modal").hidden = false;
+  $("review-body").scrollTop = 0;
+}
+function closeReview() { sfx.click(); $("review-modal").hidden = true; }
+
+// teks pembahasan (soal salah) untuk dibagikan ke WhatsApp
+function buildReviewShareText() {
+  const nama = store.name ? ` — ${store.name}` : "";
+  const wrong = lastAnswers.filter((a) => !a.ok);
+  const head = `📄 Pembahasan Ujian PKN Kelas 2${nama} 🐸`;
+  if (wrong.length === 0) {
+    return `${head}\n\n🌟 Semua soal dijawab benar. Hebat!\n\n— Ujian Seru PKN 💜`;
+  }
+  const blocks = wrong.map(
+    (a) => `*No. ${a.no} — ${a.tag}*\n${a.question}\n❌ Jawab: ${a.chosen}\n✅ Benar: ${a.correct}`
+  );
+  return `${head}\n\nSoal yang masih salah:\n\n${blocks.join("\n\n")}\n\n— Ujian Seru PKN 💜🐸`;
+}
+function shareReview() { sfx.click(); shareToWhatsApp(buildReviewShareText()); }
+
+$("btn-open-review").addEventListener("click", openReview);
+$("btn-review-close").addEventListener("click", closeReview);
+$("review-backdrop").addEventListener("click", closeReview);
+$("btn-share-review").addEventListener("click", shareReview);
 $("btn-study-start").addEventListener("click", () => openStudy());
 $("btn-study-result").addEventListener("click", () => openStudy(lastWrongTags));
 $("btn-study-close").addEventListener("click", closeStudy);
 $("study-backdrop").addEventListener("click", closeStudy);
 document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape" && !$("study-modal").hidden) closeStudy();
+  if (e.key !== "Escape") return;
+  if (!$("study-modal").hidden) closeStudy();
+  if (!$("review-modal").hidden) closeReview();
 });
 
 // ---------- mute ----------

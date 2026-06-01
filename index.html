@@ -130,6 +130,7 @@
           <h3 class="breakdown__title">📋 Hasil per Materi</h3>
           <p class="breakdown__hint" id="breakdown-hint"></p>
           <div class="breakdown__list" id="breakdown-list"></div>
+          <button id="btn-open-review" class="btn btn--pembahasan">📄 Lihat Pembahasan Jawaban</button>
         </div>
 
         <!-- REWARDS -->
@@ -164,6 +165,20 @@
       <p class="modal__note">Baca dan pelajari poin-poin penting di bawah ini ya! 💜🐸</p>
       <button id="btn-share-wa" class="btn btn--wa">🟢 Bagikan ke WhatsApp</button>
       <div class="modal__body" id="study-body"></div>
+    </div>
+  </div>
+
+  <!-- ============ MODAL PEMBAHASAN (evaluasi jawaban) ============ -->
+  <div id="review-modal" class="modal" hidden>
+    <div class="modal__backdrop" id="review-backdrop"></div>
+    <div class="modal__box" role="dialog" aria-modal="true" aria-labelledby="review-title">
+      <div class="modal__head">
+        <h2 id="review-title" class="modal__title">📄 Pembahasan Jawaban</h2>
+        <button id="btn-review-close" class="modal__close" aria-label="Tutup">✕</button>
+      </div>
+      <p class="modal__note">Dibahas bersama Ayah &amp; Bunda ya 💜🐸</p>
+      <button id="btn-share-review" class="btn btn--wa">🟢 Bagikan Pembahasan ke WhatsApp</button>
+      <div class="modal__body" id="review-body"></div>
     </div>
   </div>
 

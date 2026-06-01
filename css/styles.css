@@ -436,6 +436,35 @@ body {
 .bd-item--no { background: #ffe3ea; color: #c43d5e; border-color: #ffb3c4; }
 .bd-item__mark { font-weight: 800; }
 
+.btn--pembahasan {
+  margin-top: 12px;
+  width: 100%;
+  font-size: .98rem;
+  padding: 11px 18px;
+  background: linear-gradient(135deg, #7c4dff, #b388ff);
+  box-shadow: 0 6px 0 #6a3fd1;
+}
+.btn--pembahasan:active { box-shadow: 0 2px 0 #6a3fd1; }
+
+/* kartu pembahasan jawaban */
+.rv-summary { font-weight: 600; color: var(--purple-dark); text-align: center; margin-bottom: 12px; }
+.rv-card {
+  background: #fff;
+  border: 2px solid #ffd6e0;
+  border-left: 6px solid var(--bad);
+  border-radius: 14px;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+}
+.rv-card--allok { border-color: #9be3b3; border-left-color: var(--good); text-align: center; font-weight: 600; color: #1f7a3f; }
+.rv-card__head { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 6px; }
+.rv-no { font-family: "Baloo 2", sans-serif; font-weight: 800; color: var(--purple-dark); }
+.rv-tag { font-size: .78rem; font-weight: 700; background: var(--purple-soft); color: #fff; padding: 3px 10px; border-radius: 999px; }
+.rv-q { font-weight: 600; color: var(--ink); margin-bottom: 8px; line-height: 1.35; }
+.rv-line { font-weight: 600; border-radius: 10px; padding: 7px 10px; margin-top: 5px; font-size: .95rem; }
+.rv-line--wrong { background: #ffe3ea; color: #c43d5e; }
+.rv-line--right { background: var(--green-soft); color: #1f7a3f; }
+
 /* rewards */
 .rewards {
   background: linear-gradient(160deg, #fff0fb, #f1e9ff);
