@@ -244,6 +244,13 @@ body {
 }
 .btn--next:active { box-shadow: 0 3px 0 #2f8f45; }
 
+.btn--review {
+  font-size: 1.1rem; padding: 14px 24px;
+  width: 100%;
+  background: linear-gradient(135deg, #ff9f1c, #ff6b8a);
+  box-shadow: 0 8px 0 #e8851a;
+}
+.btn--review:active { box-shadow: 0 3px 0 #e8851a; }
 .btn--retry {
   font-size: 1.1rem; padding: 14px 28px;
   background: linear-gradient(135deg, var(--purple), var(--purple-soft));

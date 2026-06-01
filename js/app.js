@@ -1,4 +1,4 @@
-import { QUESTIONS } from "./questions.js";
+import { QUESTIONS, INDICATORS } from "./questions.js";
 import { REWARDS, POINTS_PER_CORRECT } from "./rewards.js";
 import { sfx, setMuted, isMuted } from "./audio.js";
 import { burst } from "./confetti.js";
@@ -42,11 +42,22 @@ function shuffle(arr) {
 }
 
 // ---------- state kuis ----------
-let order = [];        // urutan soal (acak)
-let idx = 0;           // soal ke berapa
-let correct = 0;       // jumlah benar
-let earnedPoints = 0;  // poin sesi ini
-let locked = false;    // cegah klik ganda
+let order = [];          // urutan soal sesi ini
+let idx = 0;             // soal ke berapa
+let correct = 0;         // jumlah benar
+let earnedPoints = 0;    // poin sesi ini
+let locked = false;      // cegah klik ganda
+let wrongQuestions = []; // soal yang dijawab salah (untuk mode ulangi)
+let reviewMode = false;  // true = sedang mengulang soal yang salah (latihan, tanpa poin)
+
+// Susun 1 soal ACAK dari TIAP indikator (sesuai kisi-kisi) lalu diacak urutannya.
+function buildExam() {
+  const picked = INDICATORS.map((ind) => {
+    const pool = QUESTIONS.filter((q) => q.tag === ind);
+    return pool.length ? pool[Math.floor(Math.random() * pool.length)] : null;
+  }).filter(Boolean);
+  return shuffle(picked);
+}
 
 // ---------- START ----------
 const nameInput = $("player-name");
@@ -75,10 +86,26 @@ nameInput.addEventListener("keydown", (e) => {
 
 // ---------- mulai kuis ----------
 function startQuiz() {
-  order = shuffle(QUESTIONS);
+  reviewMode = false;
+  // 1 soal acak per indikator -> selalu 20 soal lengkap sesuai kisi-kisi
+  order = buildExam();
+  beginSession();
+}
+
+// ---------- mulai mode ulangi soal yang salah ----------
+function startReview() {
+  if (!pendingReview.length) return;
+  reviewMode = true;
+  order = shuffle(pendingReview);
+  beginSession();
+}
+
+// `order` harus sudah diisi sebelum memanggil fungsi ini.
+function beginSession() {
   idx = 0;
   correct = 0;
   earnedPoints = 0;
+  wrongQuestions = [];
   $("q-total").textContent = order.length;
   $("live-score").textContent = "0";
   show("quiz");
@@ -128,13 +155,14 @@ function choose(btn, opt, q) {
     btn.classList.add("option--correct");
     correct++;
     earnedPoints += POINTS_PER_CORRECT;
-    $("live-score").textContent = String(correct * 5); // nilai live: tiap benar 5 poin nilai (maks 100)
+    $("live-score").textContent = String(correct); // jumlah benar sejauh ini
     sfx.correct();
     burst(70, 0.5, 0.3);
     fb.classList.add("feedback--good");
     fb.textContent = q.why;
   } else {
     btn.classList.add("option--wrong");
+    wrongQuestions.push(q); // simpan untuk mode "ulangi soal yang salah"
     // tandai jawaban benar supaya anak belajar
     allBtns.forEach((b) => {
       const txt = b.querySelector(".option__txt").textContent;
@@ -142,7 +170,7 @@ function choose(btn, opt, q) {
     });
     sfx.wrong();
     fb.classList.add("feedback--bad");
-    fb.textContent = "Belum tepat ya. Jawaban yang benar sudah ditandai hijau. Semangat! 💪";
+    fb.textContent = `Belum tepat ya. Yang benar: "${q.options[q.answer]}". Semangat! 💪`;
   }
 
   const nextBtn = $("btn-next");
@@ -165,25 +193,36 @@ function finishQuiz() {
   $("progress-bar").style.width = "100%";
   const total = order.length;
   const nilai = Math.round((correct / total) * 100);
-
-  // simpan poin & best
-  store.points += earnedPoints;
-  if (nilai > store.best) store.best = nilai;
-  saveStore();
+  // soal yang masih salah sesi ini (disalin sebelum sesi berikutnya reset)
+  const stillWrong = wrongQuestions.slice();
 
   // teks hasil
   let title, sub, mascot;
-  if (nilai === 100) { title = "Sempurna! 🌟"; sub = "Wah, semua benar! Kamu juara sejati!"; mascot = "👑"; }
-  else if (nilai >= 80) { title = "Hebat Sekali! 🎉"; sub = "Kamu pintar banget, sedikit lagi sempurna!"; mascot = "🏆"; }
-  else if (nilai >= 60) { title = "Bagus! 💜"; sub = "Kerja bagus! Yuk pelajari lagi yang belum tepat."; mascot = "💜"; }
-  else { title = "Semangat Ya! 💪"; sub = "Belajar lagi sebentar, pasti besok bisa lebih baik!"; mascot = "🌱"; }
+  if (reviewMode) {
+    // mode latihan ulang — tanpa poin & tanpa ubah nilai terbaik
+    if (stillWrong.length === 0) {
+      title = "Mantap! Semua Betul! 🌟"; sub = "Soal yang tadi salah sekarang sudah kamu kuasai!"; mascot = "🏆";
+    } else {
+      title = "Hampir Bisa! 💪"; sub = "Masih ada yang perlu diulang sebentar lagi ya."; mascot = "🌱";
+    }
+  } else {
+    // ujian penuh — simpan poin & nilai terbaik
+    store.points += earnedPoints;
+    if (nilai > store.best) store.best = nilai;
+    saveStore();
+    if (nilai === 100) { title = "Sempurna! 🌟"; sub = "Wah, semua benar! Kamu juara sejati!"; mascot = "👑"; }
+    else if (nilai >= 80) { title = "Hebat Sekali! 🎉"; sub = "Kamu pintar banget, sedikit lagi sempurna!"; mascot = "🏆"; }
+    else if (nilai >= 60) { title = "Bagus! 💜"; sub = "Kerja bagus! Yuk ulangi yang belum tepat."; mascot = "💜"; }
+    else { title = "Semangat Ya! 💪"; sub = "Ulangi soal yang salah, pasti besok bisa lebih baik!"; mascot = "🌱"; }
+  }
 
   $("result-title").textContent = title;
   $("result-sub").textContent = `${store.name ? store.name + ", " : ""}${sub}`;
   $("result-mascot").textContent = mascot;
   $("final-correct").textContent = `${correct}/${total}`;
   $("final-score").textContent = nilai;
-  $("final-points").textContent = `+${earnedPoints}`;
+  $("final-points").textContent = reviewMode ? "—" : `+${earnedPoints}`;
+  $("final-points").parentElement.title = reviewMode ? "Mode latihan tidak menambah poin" : "";
 
   // bintang
   const starCount = nilai >= 90 ? 3 : nilai >= 70 ? 2 : nilai >= 50 ? 1 : 0;
@@ -191,6 +230,16 @@ function finishQuiz() {
   for (let i = 0; i < stars.length; i++) {
     stars[i].style.opacity = i < starCount ? "1" : "0.2";
     stars[i].style.transform = i < starCount ? "scale(1.15)" : "scale(0.9)";
+  }
+
+  // tombol "ulangi soal yang salah" — hanya muncul jika masih ada yang salah
+  pendingReview = stillWrong;
+  const reviewBtn = $("btn-review");
+  if (stillWrong.length > 0) {
+    reviewBtn.hidden = false;
+    reviewBtn.textContent = `🔁 Ulangi ${stillWrong.length} Soal yang Salah`;
+  } else {
+    reviewBtn.hidden = true;
   }
 
   renderRewards();
@@ -202,6 +251,9 @@ function finishQuiz() {
     setTimeout(() => burst(90, 0.75, 0.3), 450);
   }
 }
+
+// soal yang menunggu untuk diulang (diset saat finishQuiz)
+let pendingReview = [];
 
 // ---------- reward ----------
 function renderRewards() {
@@ -248,6 +300,7 @@ function showToast(msg) {
 }
 
 // ---------- tombol hasil ----------
+$("btn-review").addEventListener("click", () => { sfx.start(); startReview(); });
 $("btn-retry").addEventListener("click", () => { sfx.click(); startQuiz(); });
 $("btn-home").addEventListener("click", () => {
   sfx.click();
